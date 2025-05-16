@@ -28,13 +28,13 @@
 		navMain: [
 			{
 				title: 'Forecast',
-				url: '#',
+				url: '/',
 				icon: Cloud,
 				isActive: true
 			},
 			{
 				title: 'Hourly Forecast',
-				url: '#',
+				url: '/hourly',
 				icon: Clock
 			},
 			{
