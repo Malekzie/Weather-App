@@ -6,7 +6,7 @@
 		user: {
 			name: 'shadcn',
 			email: 'm@example.com',
-			avatar: '/avatars/shadcn.jpg'
+			avatar: ''
 		},
 		location: [
 			{
