@@ -9,7 +9,19 @@
 	let { form }: { form: SuperValidated<Infer<FormSchema>> } = $props();
 
 	const formController = superForm(form, {
-		validators: zodClient(formSchema)
+		validators: zodClient(formSchema),
+		onResult: (event) => {
+			const result = event.result;
+			if (result.type === 'success') {
+				const city = result.data?.form?.data?.city;
+				if (city) {
+					const url = new URL(window.location.href);
+					url.searchParams.set('city', city);
+					history.pushState({}, '', url);
+					location.reload();
+				}
+			}
+		}
 	});
 
 	// ✅ Destructure with new names

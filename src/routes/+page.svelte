@@ -20,7 +20,7 @@
 	<main
 		class="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#1e467a] from-20% via-[#14203d] via-40%"
 	>
-		<div class="m-24">
+		<div class="m-24 w-full max-w-2xl">
 			<WeatherCard weatherData={data.weatherData} />
 		</div>
 	</main>
