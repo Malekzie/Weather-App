@@ -33,7 +33,7 @@
 			},
 			{
 				title: 'Hourly Forecast',
-				url: '/hourly',
+				url: '/',
 				icon: Clock
 			},
 			{

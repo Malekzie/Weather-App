@@ -1,5 +1,4 @@
 <script lang="ts">
-	import DailyWeather from '$lib/components/svelte/dailyWeather.svelte';
 	import WeatherCard from '$lib/components/svelte/weatherCard.svelte';
 	let { data } = $props();
 
@@ -10,9 +9,6 @@
 	<main>
 		<div class="m-24">
 			<WeatherCard {weatherData} />
-		</div>
-		<div>
-			<DailyWeather />
 		</div>
 	</main>
 {:else}
