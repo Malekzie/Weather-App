@@ -1,8 +1,8 @@
-import type { PageLoad } from './$types';
 import { env } from '$env/dynamic/private';
 import { cacheWeather, getCachedWeather } from '$lib/server/upstash.config';
+import type { PageServerLoad } from './$types';
 
-export const load: PageLoad = async () => {
+export const load: PageServerLoad = async ({ locals }) => {
 	const city = 'Calgary';
 	const apiKey = env.OPENWEATHER_API_KEY;
 
@@ -11,7 +11,7 @@ export const load: PageLoad = async () => {
 		const cached = await getCachedWeather(city);
 		if (cached) {
 			console.log('Serving from cache...');
-			return { weatherData: cached };
+			return { weatherData: cached, form: locals.form };
 		}
 
 		// 2. Fetch fresh data if not cached

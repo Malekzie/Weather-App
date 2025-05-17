@@ -3,7 +3,9 @@
 declare global {
 	namespace App {
 		// interface Error {}
-		// interface Locals {}
+		interface Locals {
+			form: Awaited<ReturnType<typeof import('$lib/server/form').getForm>>;
+		}
 		// interface PageData {}
 		// interface PageState {}
 		// interface Platform {}
