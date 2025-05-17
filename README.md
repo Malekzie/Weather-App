@@ -7,6 +7,7 @@ A simple application showing the rendering of the fetched data from an api in mu
 - **[Sveltekit](https://svelte.dev/docs/svelte)** - Framework of choice
 - **[Shadcn/Sveltekit](https://next.shadcn-svelte.com/)** - UI Component library with **TailwindCSS**
 - **[OpenWeather](https://openweathermap.org/)** - API Used for calling Weather Data
+- **[Lucide/Svelte](https://lucide.dev/icons/?search=happy)** - Framework friendly Icons
 
 ## TO BE IMPLEMENTED
 
