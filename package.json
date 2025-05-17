@@ -44,6 +44,7 @@
 		"vite": "^6.0.0"
 	},
 	"dependencies": {
+		"@upstash/redis": "^1.34.9",
 		"lucide-svelte": "^0.510.0"
 	}
 }

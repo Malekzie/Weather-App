@@ -39,7 +39,6 @@
 		contentClass = '',
 		headerClass = ''
 	} = $props();
-	console.log(weatherData);
 
 	// Reactive state using Svelte 5 syntax with consolidated $state object
 	const opt = $state<{
@@ -80,7 +79,7 @@
 
 		return `bg-gradient-to-br ${timeClass}`;
 	}
-
+	// @ts-expect-error
 	function getIconType(iconCode) {
 		// OpenWeatherMap icon codes: https://openweathermap.org/weather-conditions
 		if (!iconCode) return 'unknown';
@@ -110,7 +109,7 @@
 				return 'unknown';
 		}
 	}
-
+	// @ts-expect-error
 	function getWindDirection(degrees) {
 		if (degrees === undefined) return 'N/A';
 
@@ -135,13 +134,13 @@
 		const index = Math.round(degrees / 22.5) % 16;
 		return directions[index];
 	}
-
+	// @ts-expect-error
 	function formatTime(timestamp) {
 		if (!timestamp) return '--:--';
 		const date = new Date(timestamp * 1000);
 		return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 	}
-
+	// @ts-expect-error
 	function formatDate(timestamp) {
 		if (!timestamp) return 'Unknown';
 		const date = new Date(timestamp * 1000);
@@ -181,7 +180,7 @@
 	});
 </script>
 
-<Card.Root class="w-full max-w-xl overflow-hidden shadow-lg {opt.backgroundClass} {userClass}">
+<Card.Root class="w-full max-w-3xl overflow-hidden shadow-lg {opt.backgroundClass} {userClass}">
 	<Card.Content class="p-6 {contentClass}">
 		{#if opt.isLoading && !weatherData}
 			<div class="flex flex-col items-center justify-center py-12">
@@ -201,7 +200,6 @@
 				</div>
 				<Badge variant="outline" class="capitalize">{opt.timeOfDay}</Badge>
 			</div>
-
 			<!-- Main temperature and condition display -->
 			<div class="mt-6 flex items-center justify-between">
 				<div class="flex items-center">
@@ -225,7 +223,6 @@
 							<Cloud size={64} />
 						{/if}
 					</div>
-
 					<div>
 						<div class="flex items-end">
 							<span class="text-5xl font-bold {temperatureClass}">
@@ -260,9 +257,7 @@
 					</p>
 				</div>
 			</div>
-
-			<Separator class="my-6" />
-
+			<Separator class="my-6 bg-transparent" />
 			<!-- Weather details grid -->
 			<div class="grid grid-cols-2 gap-4">
 				<!-- Wind info -->
@@ -280,7 +275,6 @@
 						</span>
 					</div>
 				</div>
-
 				<!-- Humidity -->
 				<div class="flex flex-col">
 					<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -291,7 +285,6 @@
 					</span>
 					<Progress value={opt.humidityProgress} class="mt-1 h-1" />
 				</div>
-
 				<!-- UV Index (estimated or not available) -->
 				<div class="flex flex-col">
 					<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -303,7 +296,6 @@
 					</div>
 					<Progress value={20} class="mt-1 h-1" />
 				</div>
-
 				<!-- Visibility -->
 				<div class="flex flex-col">
 					<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -315,7 +307,6 @@
 					<Progress value={opt.visibilityProgress} class="mt-1 h-1" />
 				</div>
 			</div>
-
 			<div class="mt-4 grid grid-cols-3 gap-4">
 				<!-- Pressure -->
 				<div class="flex flex-col">
@@ -326,7 +317,6 @@
 						{weatherData?.main?.pressure || 0} hPa
 					</span>
 				</div>
-
 				<!-- Min Temp -->
 				<div class="flex flex-col">
 					<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -340,7 +330,6 @@
 							: '--'}{isFahrenheit ? '°F' : '°C'}
 					</span>
 				</div>
-
 				<!-- Max Temp -->
 				<div class="flex flex-col">
 					<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -356,10 +345,9 @@
 				</div>
 			</div>
 
-			<Separator class="my-6" />
-
+			<Separator class="my-6 w-full bg-white" orientation="vertical" />
 			<!-- Sun times -->
-			<div class="flex items-center justify-between">
+			<div class="flex w-full items-center justify-between px-6">
 				<div class="flex items-center">
 					<Sunrise class="mr-2 h-5 w-5 text-orange-400" />
 					<div>

@@ -1,7 +1,6 @@
 <script lang="ts" module>
-	import { AudioWaveform, Smile, Bot, Command, Cloud, Clock, Calendar } from 'lucide-svelte';
+	import { AudioWaveform, Smile, Command, Cloud, Clock, Calendar } from 'lucide-svelte';
 
-	// This is sample data.
 	const data = {
 		user: {
 			name: 'shadcn',
