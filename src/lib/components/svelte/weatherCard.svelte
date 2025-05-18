@@ -1,5 +1,5 @@
 <script lang="ts">
-	// Import shadcn components according to the documentation
+	// ... (imports remain unchanged)
 	import * as Card from '$lib/components/ui/card/index.js';
 	import { Separator } from '$lib/components/ui/separator';
 	import { Badge } from '$lib/components/ui/badge';
@@ -24,23 +24,14 @@
 	} from 'lucide-svelte';
 	type TimeOfDay = 'morning' | 'afternoon' | 'evening' | 'night';
 
-	// Using $props() rune for component props with proper typing
 	let {
-		// The OpenWeatherMap API response for city endpoint
 		weatherData = null,
-
-		// Option to display temperature in Fahrenheit
 		isFahrenheit = false,
-
-		// Class customization opt
 		class: userClass = '',
 		iconClass = 'text-blue-500 dark:text-blue-400',
-		temperatureClass = 'text-gray-800 dark:text-white',
-		contentClass = '',
-		headerClass = ''
+		temperatureClass = 'text-gray-800 dark:text-white'
 	} = $props();
 
-	// Reactive state using Svelte 5 syntax with consolidated $state object
 	const opt = $state<{
 		timeOfDay: TimeOfDay;
 		iconType: string;
@@ -49,17 +40,18 @@
 		humidityProgress: number;
 		visibilityProgress: number;
 		isLoading: boolean;
+		error: string | null;
 	}>({
 		timeOfDay: getTimeOfDay(),
 		iconType: 'unknown',
 		iconCode: '',
-		backgroundClass: '', // will be set after timeOfDay is known
+		backgroundClass: '',
 		humidityProgress: 0,
 		visibilityProgress: 0,
-		isLoading: true
+		isLoading: true,
+		error: null
 	});
 
-	// Helper functions
 	function getTimeOfDay(): TimeOfDay {
 		const now = new Date();
 		const hours = now.getHours();
@@ -71,23 +63,19 @@
 
 	function getBackgroundClass() {
 		const timeClass = {
-			morning: 'from-blue-100 to-yellow-50 dark:from-blue-900 dark:to-gray-900',
-			afternoon: 'from-blue-50 to-blue-100 dark:from-blue-800 dark:to-gray-900',
-			evening: 'from-orange-100 to-purple-100 dark:from-indigo-900 dark:to-gray-900',
-			night: 'from-blue-900 to-gray-900 dark:from-gray-900 dark:to-gray-800'
+			morning: 'from-amber-100 to-sky-200 dark:from-amber-800 dark:to-blue-900',
+			afternoon: 'from-sky-200 to-blue-200 dark:from-sky-800 dark:to-blue-800',
+			evening: 'from-amber-200 to-purple-200 dark:from-orange-900 dark:to-indigo-900',
+			night: 'from-indigo-900 to-slate-900 dark:from-slate-900 dark:to-gray-950'
 		}[opt.timeOfDay];
 
 		return `bg-gradient-to-br ${timeClass}`;
 	}
 	// @ts-expect-error
 	function getIconType(iconCode) {
-		// OpenWeatherMap icon codes: https://openweathermap.org/weather-conditions
 		if (!iconCode) return 'unknown';
-
-		// First two characters determine the weather type
 		const code = iconCode.substring(0, 2);
 		const isNight = iconCode.endsWith('n');
-
 		switch (code) {
 			case '01':
 				return isNight ? 'clear-night' : 'clear';
@@ -112,7 +100,6 @@
 	// @ts-expect-error
 	function getWindDirection(degrees) {
 		if (degrees === undefined) return 'N/A';
-
 		const directions = [
 			'N',
 			'NNE',
@@ -153,35 +140,38 @@
 		});
 	}
 
-	// Process weather data when it becomes available
 	$effect(() => {
-		// Check if weatherData is available and properly formed
-		if (weatherData && weatherData.weather && weatherData.main) {
-			// Update loading state
+		if (!weatherData || typeof weatherData !== 'object') {
 			opt.isLoading = false;
-
-			// Extract icon code from weather data and determine icon type
+			opt.error = 'No weather data available. Please try another city.';
+			return;
+		}
+		if (weatherData.cod && weatherData.cod !== 200) {
+			opt.isLoading = false;
+			opt.error = weatherData.message || 'Weather data error. Please try again.';
+			return;
+		}
+		if (weatherData && weatherData.weather && weatherData.main) {
+			opt.isLoading = false;
+			opt.error = null;
 			if (weatherData.weather.length > 0) {
 				opt.iconCode = weatherData.weather[0].icon;
 				opt.iconType = getIconType(opt.iconCode);
 			}
-
-			// Update humidity progress
-			opt.humidityProgress = weatherData.main.humidity;
-
-			// Update visibility progress (convert to percentage, where 10km is 100%)
-			if (weatherData.visibility) {
-				opt.visibilityProgress = (weatherData.visibility / 10000) * 100;
-			}
-
-			// Keep background class updated
+			opt.humidityProgress = Number(weatherData.main.humidity) || 0;
+			opt.visibilityProgress = weatherData.visibility
+				? (Number(weatherData.visibility) / 10000) * 100
+				: 0;
 			opt.backgroundClass = getBackgroundClass();
+		} else {
+			opt.isLoading = false;
+			opt.error = 'Malformed weather data received.';
 		}
 	});
 </script>
 
 <Card.Root class="w-full max-w-3xl overflow-hidden shadow-lg {opt.backgroundClass} {userClass}">
-	<Card.Content class="p-6 {contentClass}">
+	<Card.Content class="p-6">
 		{#if opt.isLoading && !weatherData}
 			<div class="flex flex-col items-center justify-center py-12">
 				<Loader2 class="h-12 w-12 animate-spin text-gray-400 dark:text-gray-600" />
@@ -189,7 +179,7 @@
 			</div>
 		{:else}
 			<!-- Header section with location and last updated -->
-			<div class="flex items-start justify-between {headerClass}">
+			<div class="flex items-start justify-between">
 				<div>
 					<h2 class="text-2xl font-bold text-gray-800 dark:text-gray-100">
 						{weatherData?.name}, {weatherData?.sys?.country || ''}
@@ -304,7 +294,7 @@
 					<span class="mt-1 text-gray-800 dark:text-gray-200">
 						{weatherData?.visibility ? (weatherData.visibility / 1000).toFixed(1) : 0} km
 					</span>
-					<Progress value={opt.visibilityProgress} class="mt-1 h-1" />
+					<Progress value={opt.visibilityProgress / 10} class="mt-1 h-1" />
 				</div>
 			</div>
 			<div class="mt-4 grid grid-cols-3 gap-4">

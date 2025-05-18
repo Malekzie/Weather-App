@@ -3,6 +3,7 @@
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import SearchForm from '$lib/components/svelte/searchForm.svelte';
 	import { page } from '$app/state';
+	import Weather from '$lib/components/svelte/weather/WeatherCard.svelte';
 
 	let { data } = $props();
 </script>
@@ -21,7 +22,7 @@
 		class="flex h-full w-full items-center justify-center bg-gradient-to-b from-[#1e467a] from-20% via-[#14203d] via-40%"
 	>
 		<div class="m-24 w-full max-w-2xl">
-			<WeatherCard weatherData={data.weatherData} />
+			<Weather weatherData={data.weatherData} />
 		</div>
 	</main>
 {:else}

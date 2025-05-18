@@ -4,72 +4,36 @@ import type { PageServerLoad, Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
 import { formSchema } from '$lib/schemas/schema';
 import { zod } from 'sveltekit-superforms/adapters';
+import { getWeatherData } from '$lib/server/weatherService';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
 	const city = url.searchParams.get('city') ?? 'Calgary';
-	console.log('City from URL:', city);
 	const apiKey = env.OPENWEATHER_API_KEY;
 
 	try {
-		// 1. Check if the weather data is cached
-		const cached = await getCachedWeather(city);
-		if (cached) {
-			console.log('Serving from cache...');
-			return { weatherData: cached, form: locals.form, city };
-		}
-
-		// 2. Fetch fresh data if not cached
-		const response = await fetch(
-			`https://api.openweathermap.org/data/2.5/weather?q=${city}&exclude=alerts&appid=${apiKey}&units=metric`
-		);
-
-		if (!response.ok) throw new Error('Failed to fetch weather data');
-
-		const weatherData = await response.json();
-
-		// 3. Cache the fresh data
-		await cacheWeather(city, weatherData);
-
-		return { weatherData };
+		const weatherData = await getWeatherData(city, apiKey);
+		return { weatherData, form: locals.form, city };
 	} catch (err) {
-		console.error('Error:', err);
-		return { weatherData: null };
+		console.error('Load Error:', err);
+		return { weatherData: null, city, error: 'Could not load weather data.' };
 	}
 };
-
 export const actions: Actions = {
 	default: async (event) => {
 		const form = await superValidate(event, zod(formSchema));
 		const city = form.data.city;
 		const apiKey = env.OPENWEATHER_API_KEY;
+
 		if (!form.valid) {
 			return { form, city };
 		}
 
 		try {
-			// 1. Check if the weather data is cached
-			const cached = await getCachedWeather(city);
-			if (cached) {
-				console.log('Serving from cache...');
-				return { weatherData: cached, form, city };
-			}
-
-			// 2. Fetch fresh data if not cached
-			const response = await fetch(
-				`https://api.openweathermap.org/data/2.5/weather?q=${city}&exclude=alerts&appid=${apiKey}&units=metric`
-			);
-
-			if (!response.ok) throw new Error('Failed to fetch weather data');
-
-			const weatherData = await response.json();
-
-			// 3. Cache the fresh data
-			await cacheWeather(city, weatherData);
-
+			const weatherData = await getWeatherData(city, apiKey);
 			return { weatherData, form, city };
 		} catch (err) {
-			console.error('Error:', err);
-			return { weatherData: null, form, city };
+			console.error('Action Error:', err);
+			return { weatherData: null, form, city, error: 'Could not fetch weather data.' };
 		}
 	}
 };

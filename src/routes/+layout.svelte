@@ -8,9 +8,9 @@
 
 <Sidebar.Provider>
 	<AppSidebar />
-	<Sidebar.Trigger class="m-2" />
 	<div class="flex h-full w-screen flex-col">
 		<main class="bg-gradient-to-b from-[#1e467a] from-20% via-[#14203d] via-40%">
+			<Sidebar.Trigger class="relative " />
 			{@render children?.()}
 		</main>
 	</div>
