@@ -1,5 +1,4 @@
 <script lang="ts">
-	import WeatherCard from '$lib/components/svelte/weatherCard.svelte';
 	import Separator from '$lib/components/ui/separator/separator.svelte';
 	import SearchForm from '$lib/components/svelte/searchForm.svelte';
 	import { page } from '$app/state';

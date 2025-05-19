@@ -46,14 +46,6 @@
 		<Progress value={(visibility / 10000) * 100} class="mt-1 h-1" />
 	</div>
 
-	<!-- Pressure -->
-	<div class="flex flex-col">
-		<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
-			<Gauge class="mr-1 h-4 w-4" /> Pressure
-		</span>
-		<span class="mt-1 text-gray-800 dark:text-gray-200">{pressure} hPa</span>
-	</div>
-
 	<!-- UV Index (placeholder) -->
 	<div class="flex flex-col">
 		<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
@@ -66,23 +58,35 @@
 		<Progress value={20} class="mt-1 h-1" />
 	</div>
 
-	<div class="flex flex-col">
-		<div class="mt-4 grid grid-cols-2 gap-4">
-			<LabelValue
-				label="Min Temp"
-				value={tempMin !== null
+	<div class="col-span-2 flex w-full items-center justify-between">
+		<!-- Pressure -->
+		<div class="flex flex-col">
+			<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+				<Gauge class="mr-1 h-4 w-4" /> Pressure
+			</span>
+			<span class="mt-1 text-gray-800 dark:text-gray-200">{pressure} hPa</span>
+		</div>
+		<!-- Min Temp -->
+		<div class="flex flex-col">
+			<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+				<Thermometer class="mr-1 h-4 w-4" /> Min Temp
+			</span>
+			<span class="mt-1 text-gray-800 dark:text-gray-200">
+				{tempMin !== null
 					? `${convertTemp(tempMin, isFahrenheit)}${isFahrenheit ? '°F' : '°C'}`
 					: '--'}
-				icon={Thermometer}
-			/>
-
-			<LabelValue
-				label="Max Temp"
-				value={tempMax !== null
+			</span>
+		</div>
+		<!-- Max Temp -->
+		<div class="flex flex-col">
+			<span class="flex items-center text-sm text-gray-500 dark:text-gray-400">
+				<Thermometer class="mr-1 h-4 w-4" /> Max Temp
+			</span>
+			<span class="mt-1 text-gray-800 dark:text-gray-200">
+				{tempMax !== null
 					? `${convertTemp(tempMax, isFahrenheit)}${isFahrenheit ? '°F' : '°C'}`
 					: '--'}
-				icon={Thermometer}
-			/>
+			</span>
 		</div>
 	</div>
 </div>

@@ -1,5 +1,4 @@
 import { env } from '$env/dynamic/private';
-import { cacheWeather, getCachedWeather } from '$lib/server/upstash.config';
 import type { PageServerLoad, Actions } from './$types';
 import { superValidate } from 'sveltekit-superforms/server';
 import { formSchema } from '$lib/schemas/schema';
@@ -7,7 +6,8 @@ import { zod } from 'sveltekit-superforms/adapters';
 import { getWeatherData } from '$lib/server/weatherService';
 
 export const load: PageServerLoad = async ({ url, locals }) => {
-	const city = url.searchParams.get('city') ?? 'Calgary';
+	const cityParam = url.searchParams.get('city');
+	const city = cityParam && cityParam.trim() !== '' ? cityParam : 'Calgary';
 	const apiKey = env.OPENWEATHER_API_KEY;
 
 	try {
@@ -21,7 +21,8 @@ export const load: PageServerLoad = async ({ url, locals }) => {
 export const actions: Actions = {
 	default: async (event) => {
 		const form = await superValidate(event, zod(formSchema));
-		const city = form.data.city;
+		const rawCity = form.data.city;
+		const city = rawCity && rawCity.trim() !== '' ? rawCity : 'Calgary';
 		const apiKey = env.OPENWEATHER_API_KEY;
 
 		if (!form.valid) {

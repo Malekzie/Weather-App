@@ -24,6 +24,7 @@ export async function getWeatherData(city: string, apiKey: string): Promise<any>
 	endpoint.searchParams.append('units', 'metric');
 
 	const response = await fetch(endpoint.toString());
+
 	if (!response.ok) {
 		throw new Error(`Failed to fetch weather data: ${response.status} ${response.statusText}`);
 	}
